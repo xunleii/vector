@@ -72,3 +72,11 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: make check-blog
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Run shellcheck linter
+        uses: azohra/shell-linter@v0.3.0
