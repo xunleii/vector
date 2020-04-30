@@ -21,8 +21,6 @@ use serde::{Deserialize, Serialize};
 //   - Automatic partial merge.
 // - Namespace.
 
-const COMPONENT_NAME: &str = "kubernetes_logs";
-
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Config {}
 
@@ -30,21 +28,19 @@ inventory::submit! {
     SourceDescription::new_without_default::<Config>(COMPONENT_NAME)
 }
 
-#[derive(Clone)]
-struct Source {}
+const COMPONENT_NAME: &str = "kubernetes_logs";
 
 #[typetag::serde(name = "kubernetes_logs")]
 impl SourceConfig for Config {
     fn build(
         &self,
-        name: &str,
-        globals: &GlobalOptions,
-        shutdown: ShutdownSignal,
-        out: mpsc::Sender<Event>,
+        _name: &str,
+        _globals: &GlobalOptions,
+        _shutdown: ShutdownSignal,
+        _out: mpsc::Sender<Event>,
     ) -> crate::Result<sources::Source> {
-        let fut = source();
-        let fut = futures::compat::Compat::new(fut);
-        let fut = Box::new(fut);
+        let fut = futures::compat::Compat::new(source());
+        let fut: sources::Source = Box::new(fut);
         Ok(fut)
     }
 
@@ -57,5 +53,9 @@ impl SourceConfig for Config {
     }
 }
 
+#[derive(Clone)]
+struct Source {}
 
-async fn source() {}
+async fn source() -> Result<(), ()> {
+    Ok(())
+}
